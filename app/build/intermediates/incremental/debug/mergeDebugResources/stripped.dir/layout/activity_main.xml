@@ -37,7 +37,7 @@
         app:layout_constraintStart_toStartOf="@id/interval2Input" />
 
     <EditText
-        android.id="@+id/interval2Input"
+        android:id="@+id/interval2Input"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:hint="Interval 2 (s)"
