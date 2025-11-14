@@ -1,7 +1,7 @@
 package com.example.timerapp
 
-import android.media.AudioAttributes
-import android.media.SoundPool
+import android.media.AudioManager
+import android.media.ToneGenerator
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.Button
@@ -32,9 +32,7 @@ class MainActivity : AppCompatActivity() {
     private var remainingTime = interval1 * 1000L
     private var totalTimeElapsed = 0L
 
-    private lateinit var soundPool: SoundPool
-    private var soundId: Int = 0
-    private var isSoundLoaded = false
+    private lateinit var toneGenerator: ToneGenerator
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,24 +48,10 @@ class MainActivity : AppCompatActivity() {
         totalDurationInput = findViewById(R.id.totalDurationInput)
         saveIntervalsButton = findViewById(R.id.saveIntervalsButton)
 
-        val audioAttributes = AudioAttributes.Builder()
-            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-            .build()
-
-        soundPool = SoundPool.Builder()
-            .setMaxStreams(3)
-            .setAudioAttributes(audioAttributes)
-            .build()
-
-        soundPool.setOnLoadCompleteListener { _, _, _ ->
-            isSoundLoaded = true
-            startTimer()
-        }
-
-        soundId = soundPool.load(this, R.raw.beep, 1)
+        toneGenerator = ToneGenerator(AudioManager.STREAM_ALARM, 100)
 
         updateDisplay()
+        startTimer()
 
         startStopButton.setOnClickListener {
             if (isRunning) {
@@ -105,7 +89,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun startTimer() {
-        if (!isSoundLoaded || isRunning) return
+        if (isRunning) return
         isRunning = true
         startStopButton.text = "Stop"
         totalTimeElapsed = 0L
@@ -133,9 +117,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
-                if (isSoundLoaded) {
-                    soundPool.play(soundId, 1f, 1f, 1, 2, 1f)
-                }
+                playBeeps(3)
                 if (currentInterval == 30) {
                     currentInterval = lastIntervalBeforeRest
                 } else {
@@ -150,6 +132,21 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }.start()
+    }
+
+    private fun playBeeps(beepCount: Int) {
+        var beeps = 0
+        val beepTimer = object : CountDownTimer((beepCount * 500).toLong(), 500) {
+            override fun onTick(millisUntilFinished: Long) {
+                if (beeps < beepCount) {
+                    toneGenerator.startTone(ToneGenerator.TONE_CDMA_PIP, 300)
+                    beeps++
+                }
+            }
+
+            override fun onFinish() {}
+        }
+        beepTimer.start()
     }
 
     private fun startTotalTimer() {
@@ -185,6 +182,6 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         countDownTimer?.cancel()
         totalTimer?.cancel()
-        soundPool.release()
+        toneGenerator.release()
     }
 }
