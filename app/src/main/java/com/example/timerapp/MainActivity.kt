@@ -117,7 +117,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
-                playBeeps(3)
+                playBeeps(4)
                 if (currentInterval == 30) {
                     currentInterval = lastIntervalBeforeRest
                 } else {
@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity() {
         val beepTimer = object : CountDownTimer((beepCount * 500).toLong(), 500) {
             override fun onTick(millisUntilFinished: Long) {
                 if (beeps < beepCount) {
-                    toneGenerator.startTone(ToneGenerator.TONE_CDMA_PIP, 300)
+                    toneGenerator.startTone(ToneGenerator.TONE_SUP_RINGTONE, 300)
                     beeps++
                 }
             }
