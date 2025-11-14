@@ -11,8 +11,10 @@ color white
 drawable ic_launcher_foreground
 id interval1Input
 id interval1Label
+id interval1Seconds
 id interval2Input
 id interval2Label
+id interval2Seconds
 id intervalText
 id restButton
 id saveIntervalsButton
@@ -20,6 +22,7 @@ id startStopButton
 id timerText
 id totalDurationInput
 id totalDurationLabel
+id totalDurationMinutes
 id totalTimeText
 layout activity_main
 mipmap ic_launcher

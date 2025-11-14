@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         soundPool = SoundPool.Builder()
-            .setMaxStreams(1)
+            .setMaxStreams(3)
             .setAudioAttributes(audioAttributes)
             .build()
 
@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onFinish() {
                 if (isSoundLoaded) {
-                    soundPool.play(soundId, 0.5f, 0.5f, 1, 0, 1f)
+                    soundPool.play(soundId, 1f, 1f, 1, 2, 1f)
                 }
                 if (currentInterval == 30) {
                     currentInterval = lastIntervalBeforeRest

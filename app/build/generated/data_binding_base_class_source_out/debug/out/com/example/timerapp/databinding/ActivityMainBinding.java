@@ -28,10 +28,16 @@ public final class ActivityMainBinding implements ViewBinding {
   public final TextView interval1Label;
 
   @NonNull
+  public final TextView interval1Seconds;
+
+  @NonNull
   public final EditText interval2Input;
 
   @NonNull
   public final TextView interval2Label;
+
+  @NonNull
+  public final TextView interval2Seconds;
 
   @NonNull
   public final TextView intervalText;
@@ -55,19 +61,26 @@ public final class ActivityMainBinding implements ViewBinding {
   public final TextView totalDurationLabel;
 
   @NonNull
+  public final TextView totalDurationMinutes;
+
+  @NonNull
   public final TextView totalTimeText;
 
   private ActivityMainBinding(@NonNull ConstraintLayout rootView, @NonNull EditText interval1Input,
-      @NonNull TextView interval1Label, @NonNull EditText interval2Input,
-      @NonNull TextView interval2Label, @NonNull TextView intervalText, @NonNull Button restButton,
-      @NonNull Button saveIntervalsButton, @NonNull Button startStopButton,
-      @NonNull TextView timerText, @NonNull EditText totalDurationInput,
-      @NonNull TextView totalDurationLabel, @NonNull TextView totalTimeText) {
+      @NonNull TextView interval1Label, @NonNull TextView interval1Seconds,
+      @NonNull EditText interval2Input, @NonNull TextView interval2Label,
+      @NonNull TextView interval2Seconds, @NonNull TextView intervalText,
+      @NonNull Button restButton, @NonNull Button saveIntervalsButton,
+      @NonNull Button startStopButton, @NonNull TextView timerText,
+      @NonNull EditText totalDurationInput, @NonNull TextView totalDurationLabel,
+      @NonNull TextView totalDurationMinutes, @NonNull TextView totalTimeText) {
     this.rootView = rootView;
     this.interval1Input = interval1Input;
     this.interval1Label = interval1Label;
+    this.interval1Seconds = interval1Seconds;
     this.interval2Input = interval2Input;
     this.interval2Label = interval2Label;
+    this.interval2Seconds = interval2Seconds;
     this.intervalText = intervalText;
     this.restButton = restButton;
     this.saveIntervalsButton = saveIntervalsButton;
@@ -75,6 +88,7 @@ public final class ActivityMainBinding implements ViewBinding {
     this.timerText = timerText;
     this.totalDurationInput = totalDurationInput;
     this.totalDurationLabel = totalDurationLabel;
+    this.totalDurationMinutes = totalDurationMinutes;
     this.totalTimeText = totalTimeText;
   }
 
@@ -117,6 +131,12 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.interval1Seconds;
+      TextView interval1Seconds = ViewBindings.findChildViewById(rootView, id);
+      if (interval1Seconds == null) {
+        break missingId;
+      }
+
       id = R.id.interval2Input;
       EditText interval2Input = ViewBindings.findChildViewById(rootView, id);
       if (interval2Input == null) {
@@ -126,6 +146,12 @@ public final class ActivityMainBinding implements ViewBinding {
       id = R.id.interval2Label;
       TextView interval2Label = ViewBindings.findChildViewById(rootView, id);
       if (interval2Label == null) {
+        break missingId;
+      }
+
+      id = R.id.interval2Seconds;
+      TextView interval2Seconds = ViewBindings.findChildViewById(rootView, id);
+      if (interval2Seconds == null) {
         break missingId;
       }
 
@@ -171,6 +197,12 @@ public final class ActivityMainBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.totalDurationMinutes;
+      TextView totalDurationMinutes = ViewBindings.findChildViewById(rootView, id);
+      if (totalDurationMinutes == null) {
+        break missingId;
+      }
+
       id = R.id.totalTimeText;
       TextView totalTimeText = ViewBindings.findChildViewById(rootView, id);
       if (totalTimeText == null) {
@@ -178,8 +210,9 @@ public final class ActivityMainBinding implements ViewBinding {
       }
 
       return new ActivityMainBinding((ConstraintLayout) rootView, interval1Input, interval1Label,
-          interval2Input, interval2Label, intervalText, restButton, saveIntervalsButton,
-          startStopButton, timerText, totalDurationInput, totalDurationLabel, totalTimeText);
+          interval1Seconds, interval2Input, interval2Label, interval2Seconds, intervalText,
+          restButton, saveIntervalsButton, startStopButton, timerText, totalDurationInput,
+          totalDurationLabel, totalDurationMinutes, totalTimeText);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

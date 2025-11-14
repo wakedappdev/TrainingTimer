@@ -3309,8 +3309,10 @@ id indeterminate
 id info
 id interval1Input
 id interval1Label
+id interval1Seconds
 id interval2Input
 id interval2Label
+id interval2Seconds
 id intervalText
 id invisible
 id inward
@@ -3558,6 +3560,7 @@ id top
 id topPanel
 id totalDurationInput
 id totalDurationLabel
+id totalDurationMinutes
 id totalTimeText
 id touch_outside
 id transitionToEnd
