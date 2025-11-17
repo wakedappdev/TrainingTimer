@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     private var totalDuration = 25
     private var currentInterval = interval1
     private var remainingTime = interval1 * 1000L
+    private var totalTimeRemaining = 0L
     private var totalTimeElapsed = 0L
     private var iterationCount = 0
 
@@ -108,13 +109,14 @@ class MainActivity : AppCompatActivity() {
         pauseResumeButton.text = "Pause"
         totalTimeElapsed = 0L
         iterationCount = 0
+        totalTimeRemaining = totalDuration * 60 * 1000L
         updateDisplay()
 
         createTimer(remainingTime)
         startTrackingTimer()
 
         if (stopConditionType.checkedRadioButtonId == R.id.stopAfterMinutes) {
-            startTotalTimer()
+            startTotalTimer(totalTimeRemaining)
         }
     }
 
@@ -124,9 +126,7 @@ class MainActivity : AppCompatActivity() {
         pauseResumeButton.text = "Resume"
         countDownTimer?.cancel()
         trackingTimer?.cancel()
-        if (stopConditionType.checkedRadioButtonId == R.id.stopAfterMinutes) {
-            totalTimer?.cancel()
-        }
+        totalTimer?.cancel()
     }
 
     private fun resumeTimer() {
@@ -136,7 +136,7 @@ class MainActivity : AppCompatActivity() {
         createTimer(remainingTime)
         startTrackingTimer()
         if (stopConditionType.checkedRadioButtonId == R.id.stopAfterMinutes) {
-            startTotalTimer()
+            startTotalTimer(totalTimeRemaining)
         }
     }
 
@@ -178,7 +178,6 @@ class MainActivity : AppCompatActivity() {
                 currentInterval = if (currentInterval == interval1) interval2 else interval1
 
                 remainingTime = currentInterval * 1000L
-                updateDisplay()
 
                 if (isRunning) {
                     createTimer(remainingTime)
@@ -216,10 +215,12 @@ class MainActivity : AppCompatActivity() {
         }.start()
     }
 
-    private fun startTotalTimer() {
+    private fun startTotalTimer(duration: Long) {
         totalTimer?.cancel()
-        totalTimer = object : CountDownTimer(totalDuration * 60 * 1000L, 1000) {
-            override fun onTick(millisUntilFinished: Long) {}
+        totalTimer = object : CountDownTimer(duration, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                totalTimeRemaining = millisUntilFinished
+            }
 
             override fun onFinish() {
                 stopTimer()

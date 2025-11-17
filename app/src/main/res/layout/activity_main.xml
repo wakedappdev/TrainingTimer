@@ -14,48 +14,39 @@
         android:layout_height="wrap_content"
         android:text="1st interval time"
         android:textColor="#333333"
-        app:layout_constraintBottom_toTopOf="@id/interval1Input"
-        app:layout_constraintStart_toStartOf="@id/interval1Input" />
+        app:layout_constraintBottom_toBottomOf="@+id/interval1Input"
+        app:layout_constraintEnd_toStartOf="@+id/interval1Input"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/interval1Input" />
 
     <EditText
         android:id="@+id/interval1Input"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
         android:backgroundTint="#A9A9A9"
         android:gravity="center"
         android:hint="Interval 1 (s)"
         android:inputType="number"
         android:text="90"
         android:textColor="#333333"
-        app:layout_constraintEnd_toStartOf="@+id/interval2Input"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/interval1Seconds"
+        app:layout_constraintStart_toEndOf="@+id/interval1Label"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/interval1Seconds"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:text="seconds"
         android:textColor="#333333"
         app:layout_constraintBottom_toBottomOf="@id/interval1Input"
-        app:layout_constraintStart_toEndOf="@id/interval1Input"
-        app:layout_constraintTop_toTopOf="@id/interval1Input" />
-
-    <EditText
-        android:id="@+id/interval2Input"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="44dp"
-        android:backgroundTint="#A9A9A9"
-        android:gravity="center"
-        android:hint="Interval 2 (s)"
-        android:inputType="number"
-        android:text="60"
-        android:textColor="#333333"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/interval1Input"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/interval1Input" />
 
     <TextView
         android:id="@+id/interval2Label"
@@ -63,16 +54,37 @@
         android:layout_height="wrap_content"
         android:text="2nd interval time"
         android:textColor="#333333"
-        app:layout_constraintBottom_toTopOf="@id/interval2Input"
-        app:layout_constraintStart_toStartOf="@id/interval2Input" />
+        app:layout_constraintBottom_toBottomOf="@+id/interval2Input"
+        app:layout_constraintEnd_toStartOf="@+id/interval2Input"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/interval2Input" />
+
+    <EditText
+        android:id="@+id/interval2Input"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#A9A9A9"
+        android:gravity="center"
+        android:hint="Interval 2 (s)"
+        android:inputType="number"
+        android:text="60"
+        android:textColor="#333333"
+        app:layout_constraintEnd_toStartOf="@+id/interval2Seconds"
+        app:layout_constraintStart_toEndOf="@+id/interval2Label"
+        app:layout_constraintTop_toBottomOf="@id/interval1Input" />
 
     <TextView
         android:id="@+id/interval2Seconds"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:text="seconds"
         android:textColor="#333333"
         app:layout_constraintBottom_toBottomOf="@id/interval2Input"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/interval2Input"
         app:layout_constraintTop_toTopOf="@id/interval2Input" />
 
@@ -93,7 +105,7 @@
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="#A9A9A9"
         android:gravity="center"
         android:hint="Value"
@@ -102,7 +114,7 @@
         android:textColor="#333333"
         app:layout_constraintEnd_toStartOf="@+id/stopConditionType"
         app:layout_constraintStart_toEndOf="@+id/totalDurationLabel"
-        app:layout_constraintTop_toBottomOf="@id/interval1Input" />
+        app:layout_constraintTop_toBottomOf="@id/interval2Input" />
 
     <RadioGroup
         android:id="@+id/stopConditionType"
@@ -135,7 +147,7 @@
         android:id="@+id/saveIntervalsButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:text="Save"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -145,12 +157,13 @@
         android:id="@+id/timerText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:text="00:00"
         android:textColor="#2196F3"
-        android:textSize="72sp"
+        android:textSize="96sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/intervalText"
+        app:layout_constraintBottom_toTopOf="@+id/intervalText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/saveIntervalsButton" />
@@ -159,7 +172,7 @@
         android:id="@+id/intervalText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="8dp"
         android:text="Interval: 60s"
         android:textColor="#A9A9A9"
         android:textSize="24sp"
@@ -171,7 +184,7 @@
         android:id="@+id/totalTimeText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:text="Total Time: 00:00"
         android:textColor="#D3D3D3"
         android:textSize="18sp"
@@ -195,7 +208,7 @@
         android:id="@+id/pauseResumeButton"
         android:layout_width="200dp"
         android:layout_height="60dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:text="Start"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -206,7 +219,7 @@
         android:id="@+id/stopButton"
         android:layout_width="200dp"
         android:layout_height="60dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="8dp"
         android:text="Stop"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
