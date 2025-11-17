@@ -17,8 +17,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var intervalText: TextView
     private lateinit var totalTimeText: TextView
     private lateinit var totalIterationsText: TextView
-    private lateinit var startStopButton: Button
-    private lateinit var restButton: Button
+    private lateinit var pauseResumeButton: Button
+    private lateinit var stopButton: Button
     private lateinit var interval1Input: EditText
     private lateinit var interval2Input: EditText
     private lateinit var totalDurationInput: EditText
@@ -29,11 +29,11 @@ class MainActivity : AppCompatActivity() {
     private var totalTimer: CountDownTimer? = null
     private var trackingTimer: CountDownTimer? = null
     private var isRunning = false
+    private var isPaused = false
     private var interval1 = 90
     private var interval2 = 60
     private var totalDuration = 25
     private var currentInterval = interval1
-    private var lastIntervalBeforeRest = interval1
     private var remainingTime = interval1 * 1000L
     private var totalTimeElapsed = 0L
     private var iterationCount = 0
@@ -48,8 +48,8 @@ class MainActivity : AppCompatActivity() {
         intervalText = findViewById(R.id.intervalText)
         totalTimeText = findViewById(R.id.totalTimeText)
         totalIterationsText = findViewById(R.id.totalIterationsText)
-        startStopButton = findViewById(R.id.startStopButton)
-        restButton = findViewById(R.id.restButton)
+        pauseResumeButton = findViewById(R.id.pauseResumeButton)
+        stopButton = findViewById(R.id.stopButton)
         interval1Input = findViewById(R.id.interval1Input)
         interval2Input = findViewById(R.id.interval2Input)
         totalDurationInput = findViewById(R.id.totalDurationInput)
@@ -59,22 +59,21 @@ class MainActivity : AppCompatActivity() {
         toneGenerator = ToneGenerator(AudioManager.STREAM_ALARM, 100)
 
         updateDisplay()
-        
-        startStopButton.setOnClickListener {
+
+        pauseResumeButton.setOnClickListener {
             if (isRunning) {
-                stopTimer()
+                if (isPaused) {
+                    resumeTimer()
+                } else {
+                    pauseTimer()
+                }
             } else {
                 startTimer()
             }
         }
 
-        restButton.setOnClickListener {
+        stopButton.setOnClickListener {
             stopTimer()
-            lastIntervalBeforeRest = currentInterval
-            currentInterval = 30
-            remainingTime = currentInterval * 1000L
-            updateDisplay()
-            startTimer()
         }
 
         saveIntervalsButton.setOnClickListener {
@@ -90,7 +89,6 @@ class MainActivity : AppCompatActivity() {
                 remainingTime = currentInterval * 1000L
                 stopTimer()
                 updateDisplay()
-                startTimer()
             }
         }
 
@@ -101,14 +99,13 @@ class MainActivity : AppCompatActivity() {
                 totalDurationInput.setText("8")
             }
         }
-        
-        startTimer()
     }
 
     private fun startTimer() {
         if (isRunning) return
         isRunning = true
-        startStopButton.text = "Stop"
+        isPaused = false
+        pauseResumeButton.text = "Pause"
         totalTimeElapsed = 0L
         iterationCount = 0
         updateDisplay()
@@ -121,15 +118,42 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun pauseTimer() {
+        if (!isRunning || isPaused) return
+        isPaused = true
+        pauseResumeButton.text = "Resume"
+        countDownTimer?.cancel()
+        trackingTimer?.cancel()
+        if (stopConditionType.checkedRadioButtonId == R.id.stopAfterMinutes) {
+            totalTimer?.cancel()
+        }
+    }
+
+    private fun resumeTimer() {
+        if (!isRunning || !isPaused) return
+        isPaused = false
+        pauseResumeButton.text = "Pause"
+        createTimer(remainingTime)
+        startTrackingTimer()
+        if (stopConditionType.checkedRadioButtonId == R.id.stopAfterMinutes) {
+            startTotalTimer()
+        }
+    }
+
     private fun stopTimer() {
         isRunning = false
-        startStopButton.text = "Start"
+        isPaused = false
+        pauseResumeButton.text = "Start"
         countDownTimer?.cancel()
         totalTimer?.cancel()
         trackingTimer?.cancel()
         countDownTimer = null
         totalTimer = null
         trackingTimer = null
+        remainingTime = (interval1 * 1000).toLong()
+        totalTimeElapsed = 0
+        iterationCount = 0
+        updateDisplay()
     }
 
     private fun createTimer(duration: Long) {
@@ -138,7 +162,6 @@ class MainActivity : AppCompatActivity() {
         countDownTimer = object : CountDownTimer(duration, 100) {
             override fun onTick(millisUntilFinished: Long) {
                 remainingTime = millisUntilFinished
-                updateDisplay()
             }
 
             override fun onFinish() {
@@ -152,11 +175,7 @@ class MainActivity : AppCompatActivity() {
                     return
                 }
 
-                if (currentInterval == 30) {
-                    currentInterval = lastIntervalBeforeRest
-                } else {
-                    currentInterval = if (currentInterval == interval1) interval2 else interval1
-                }
+                currentInterval = if (currentInterval == interval1) interval2 else interval1
 
                 remainingTime = currentInterval * 1000L
                 updateDisplay()
@@ -187,7 +206,7 @@ class MainActivity : AppCompatActivity() {
         trackingTimer?.cancel()
         trackingTimer = object : CountDownTimer(Long.MAX_VALUE, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                if (isRunning) {
+                if (isRunning && !isPaused) {
                     totalTimeElapsed += 1000
                     updateDisplay()
                 }
