@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity() {
                 if (currentInterval == interval2) {
                     iterationCount++
                 }
-                playBeeps(4)
+                playBeeps(3)
 
                 if (stopConditionType.checkedRadioButtonId == R.id.stopAfterIterations && iterationCount >= totalDuration) {
                     stopTimer()
@@ -191,7 +191,7 @@ class MainActivity : AppCompatActivity() {
         val beepTimer = object : CountDownTimer((beepCount * 500).toLong(), 500) {
             override fun onTick(millisUntilFinished: Long) {
                 if (beeps < beepCount) {
-                    toneGenerator.startTone(ToneGenerator.TONE_SUP_RINGTONE, 300)
+                    toneGenerator.startTone(ToneGenerator.TONE_SUP_ERROR, 300)
                     beeps++
                 }
             }
@@ -223,6 +223,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
+                playBeeps(3)
                 stopTimer()
             }
         }.start()
