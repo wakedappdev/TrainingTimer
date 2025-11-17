@@ -6,6 +6,8 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.Button
 import android.widget.EditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
@@ -20,17 +22,19 @@ class MainActivity : AppCompatActivity() {
     private lateinit var interval2Input: EditText
     private lateinit var totalDurationInput: EditText
     private lateinit var saveIntervalsButton: Button
+    private lateinit var stopConditionType: RadioGroup
 
     private var countDownTimer: CountDownTimer? = null
     private var totalTimer: CountDownTimer? = null
     private var isRunning = false
     private var interval1 = 90
     private var interval2 = 60
-    private var totalDuration = 25 // in minutes
+    private var totalDuration = 25
     private var currentInterval = interval1
     private var lastIntervalBeforeRest = interval1
     private var remainingTime = interval1 * 1000L
     private var totalTimeElapsed = 0L
+    private var iterationCount = 0
 
     private lateinit var toneGenerator: ToneGenerator
 
@@ -47,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         interval2Input = findViewById(R.id.interval2Input)
         totalDurationInput = findViewById(R.id.totalDurationInput)
         saveIntervalsButton = findViewById(R.id.saveIntervalsButton)
+        stopConditionType = findViewById(R.id.stopConditionType)
 
         toneGenerator = ToneGenerator(AudioManager.STREAM_ALARM, 100)
 
@@ -86,6 +91,14 @@ class MainActivity : AppCompatActivity() {
                 startTimer()
             }
         }
+
+        stopConditionType.setOnCheckedChangeListener { _, checkedId ->
+            if (checkedId == R.id.stopAfterMinutes) {
+                totalDurationInput.setText("25")
+            } else {
+                totalDurationInput.setText("8")
+            }
+        }
     }
 
     private fun startTimer() {
@@ -93,9 +106,12 @@ class MainActivity : AppCompatActivity() {
         isRunning = true
         startStopButton.text = "Stop"
         totalTimeElapsed = 0L
+        iterationCount = 0
 
         createTimer(remainingTime)
-        startTotalTimer()
+        if (stopConditionType.checkedRadioButtonId == R.id.stopAfterMinutes) {
+            startTotalTimer()
+        }
     }
 
     private fun stopTimer() {
@@ -117,7 +133,14 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
+                iterationCount++
                 playBeeps(4)
+
+                if (stopConditionType.checkedRadioButtonId == R.id.stopAfterIterations && iterationCount >= totalDuration) {
+                    stopTimer()
+                    return
+                }
+
                 if (currentInterval == 30) {
                     currentInterval = lastIntervalBeforeRest
                 } else {
