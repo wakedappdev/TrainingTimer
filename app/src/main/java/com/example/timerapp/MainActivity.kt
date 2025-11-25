@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.widget.Button
 import android.widget.EditText
-import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -95,9 +94,9 @@ class MainActivity : AppCompatActivity() {
 
         stopConditionType.setOnCheckedChangeListener { _, checkedId ->
             if (checkedId == R.id.stopAfterMinutes) {
-                totalDurationInput.setText("25")
+                totalDurationInput.setText(getString(R.string.minutes_default))
             } else {
-                totalDurationInput.setText("8")
+                totalDurationInput.setText(getString(R.string.iterations_default))
             }
         }
     }
@@ -106,7 +105,7 @@ class MainActivity : AppCompatActivity() {
         if (isRunning) return
         isRunning = true
         isPaused = false
-        pauseResumeButton.text = "Pause"
+        pauseResumeButton.text = getString(R.string.pause)
         totalTimeElapsed = 0L
         iterationCount = 0
         totalTimeRemaining = totalDuration * 60 * 1000L
@@ -123,7 +122,7 @@ class MainActivity : AppCompatActivity() {
     private fun pauseTimer() {
         if (!isRunning || isPaused) return
         isPaused = true
-        pauseResumeButton.text = "Resume"
+        pauseResumeButton.text = getString(R.string.resume)
         countDownTimer?.cancel()
         trackingTimer?.cancel()
         totalTimer?.cancel()
@@ -132,7 +131,7 @@ class MainActivity : AppCompatActivity() {
     private fun resumeTimer() {
         if (!isRunning || !isPaused) return
         isPaused = false
-        pauseResumeButton.text = "Pause"
+        pauseResumeButton.text = getString(R.string.pause)
         createTimer(remainingTime)
         startTrackingTimer()
         if (stopConditionType.checkedRadioButtonId == R.id.stopAfterMinutes) {
@@ -143,7 +142,7 @@ class MainActivity : AppCompatActivity() {
     private fun stopTimer() {
         isRunning = false
         isPaused = false
-        pauseResumeButton.text = "Start"
+        pauseResumeButton.text = getString(R.string.start)
         countDownTimer?.cancel()
         totalTimer?.cancel()
         trackingTimer?.cancel()
@@ -168,7 +167,7 @@ class MainActivity : AppCompatActivity() {
                 if (currentInterval == interval2) {
                     iterationCount++
                 }
-                playBeeps(3)
+                playBeeps()
 
                 if (stopConditionType.checkedRadioButtonId == R.id.stopAfterIterations && iterationCount >= totalDuration) {
                     stopTimer()
@@ -186,14 +185,10 @@ class MainActivity : AppCompatActivity() {
         }.start()
     }
 
-    private fun playBeeps(beepCount: Int) {
-        var beeps = 0
-        val beepTimer = object : CountDownTimer((beepCount * 500).toLong(), 500) {
+    private fun playBeeps() {
+        val beepTimer = object : CountDownTimer(1500, 500) {
             override fun onTick(millisUntilFinished: Long) {
-                if (beeps < beepCount) {
-                    toneGenerator.startTone(ToneGenerator.TONE_SUP_ERROR, 300)
-                    beeps++
-                }
+                toneGenerator.startTone(ToneGenerator.TONE_SUP_ERROR, 300)
             }
 
             override fun onFinish() {}
@@ -223,7 +218,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
-                playBeeps(3)
+                playBeeps()
                 stopTimer()
             }
         }.start()
@@ -233,14 +228,14 @@ class MainActivity : AppCompatActivity() {
         val seconds = (remainingTime / 1000).toInt()
         val minutes = seconds / 60
         val secs = seconds % 60
-        timerText.text = String.format("%02d:%02d", minutes, secs)
-        intervalText.text = "Interval: ${currentInterval}s"
+        timerText.text = getString(R.string.time_format, minutes, secs)
+        intervalText.text = getString(R.string.interval_label, currentInterval)
 
         val totalSeconds = (totalTimeElapsed / 1000).toInt()
         val totalMinutes = totalSeconds / 60
         val totalSecs = totalSeconds % 60
-        totalTimeText.text = String.format("Total Time: %02d:%02d", totalMinutes, totalSecs)
-        totalIterationsText.text = "Total Iterations: $iterationCount"
+        totalTimeText.text = getString(R.string.total_time_label, totalMinutes, totalSecs)
+        totalIterationsText.text = getString(R.string.total_iterations_label, iterationCount)
     }
 
     override fun onDestroy() {

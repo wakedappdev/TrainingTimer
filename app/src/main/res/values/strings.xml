@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Cadence</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="start">Start</string>
+    <string name="minutes_default">25</string>
+    <string name="iterations_default">8</string>
+    <string name="time_format">%1$02d:%2$02d</string>
+    <string name="interval_label">Interval: %1$ds</string>
+    <string name="total_time_label">Total Time: %1$02d:%2$02d</string>
+    <string name="total_iterations_label">Total Iterations: %1$d</string>
 </resources>
