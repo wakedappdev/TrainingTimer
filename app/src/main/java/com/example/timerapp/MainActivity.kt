@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import kotlin.math.ceil
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,9 +30,9 @@ class MainActivity : AppCompatActivity() {
     private var trackingTimer: CountDownTimer? = null
     private var isRunning = false
     private var isPaused = false
-    private var interval1 = 90
-    private var interval2 = 60
-    private var totalDuration = 25
+    private var interval1 = 9
+    private var interval2 = 6
+    private var totalDuration = 1
     private var currentInterval = interval1
     private var remainingTime = interval1 * 1000L
     private var totalTimeRemaining = 0L
@@ -165,9 +166,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onFinish() {
-                if (currentInterval == interval2) {
-                    iterationCount++
-                }
                 playBeeps()
 
                 if (stopConditionType.checkedRadioButtonId == R.id.stopAfterIterations && iterationCount >= totalDuration) {
@@ -176,8 +174,12 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 currentInterval = if (currentInterval == interval1) interval2 else interval1
-
                 remainingTime = currentInterval * 1000L
+
+                if (currentInterval == interval2) {
+                    iterationCount++
+                }
+                updateDisplay()
 
                 if (isRunning) {
                     createTimer(remainingTime)
@@ -225,7 +227,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateDisplay() {
-        val seconds = (remainingTime / 1000).toInt()
+        val seconds = ceil(remainingTime / 1000.0).toInt()
         val minutes = seconds / 60
         val secs = seconds % 60
         timerText.text = getString(R.string.time_format, minutes, secs)
