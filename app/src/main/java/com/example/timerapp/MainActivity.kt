@@ -161,6 +161,7 @@ class MainActivity : AppCompatActivity() {
         countDownTimer = object : CountDownTimer(duration, 100) {
             override fun onTick(millisUntilFinished: Long) {
                 remainingTime = millisUntilFinished
+                updateDisplay()
             }
 
             override fun onFinish() {
@@ -202,7 +203,6 @@ class MainActivity : AppCompatActivity() {
             override fun onTick(millisUntilFinished: Long) {
                 if (isRunning && !isPaused) {
                     totalTimeElapsed += 1000
-                    updateDisplay()
                 }
             }
 
