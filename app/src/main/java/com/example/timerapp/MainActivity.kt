@@ -4,6 +4,8 @@ import android.media.AudioManager
 import android.media.ToneGenerator
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.widget.Button
 import android.widget.EditText
 import android.widget.RadioGroup
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private var trackingTimer: CountDownTimer? = null
     private var isRunning = false
     private var isPaused = false
+    private var isInChange = false
     private var interval1 = 9
     private var interval2 = 6
     private var totalDuration = 1
@@ -40,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     private var iterationCount = 0
 
     private lateinit var toneGenerator: ToneGenerator
+    private val handler = Handler(Looper.getMainLooper())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,6 +131,18 @@ class MainActivity : AppCompatActivity() {
         countDownTimer?.cancel()
         trackingTimer?.cancel()
         totalTimer?.cancel()
+        handler.removeCallbacksAndMessages(null)
+
+        if (isInChange) {
+            isInChange = false
+            // We paused during change. Prepare for next interval so resume works correctly.
+            currentInterval = if (currentInterval == interval1) interval2 else interval1
+            remainingTime = currentInterval * 1000L
+            if (currentInterval == interval2) {
+                iterationCount++
+            }
+            updateDisplay()
+        }
     }
 
     private fun resumeTimer() {
@@ -143,6 +159,8 @@ class MainActivity : AppCompatActivity() {
     private fun stopTimer() {
         isRunning = false
         isPaused = false
+        isInChange = false
+        handler.removeCallbacksAndMessages(null)
         pauseResumeButton.text = getString(R.string.start)
         countDownTimer?.cancel()
         totalTimer?.cancel()
@@ -168,24 +186,40 @@ class MainActivity : AppCompatActivity() {
             override fun onFinish() {
                 playBeeps()
 
-                if (stopConditionType.checkedRadioButtonId == R.id.stopAfterIterations && iterationCount >= totalDuration) {
+                if (currentInterval == interval2
+                    && stopConditionType.checkedRadioButtonId == R.id.stopAfterIterations
+                    && iterationCount >= (totalDuration - 1)) {
+
                     stopTimer()
                     return
                 }
 
-                currentInterval = if (currentInterval == interval1) interval2 else interval1
-                remainingTime = currentInterval * 1000L
+                isInChange = true
+                timerText.text = "Let's go"
 
-                if (currentInterval == interval2) {
-                    iterationCount++
-                }
-                updateDisplay()
-
-                if (isRunning) {
-                    createTimer(remainingTime)
-                }
+                handler.postDelayed({
+                    isInChange = false
+                    if (isRunning && !isPaused) {
+                        startNextInterval()
+                    }
+                }, 2000)
             }
         }.start()
+    }
+
+    private fun startNextInterval() {
+        if (currentInterval == interval2) {
+            iterationCount++
+            currentInterval = interval1
+        } else {
+            currentInterval = interval2
+        }
+        remainingTime = currentInterval * 1000L
+        updateDisplay()
+
+        if (isRunning) {
+            createTimer(remainingTime)
+        }
     }
 
     private fun playBeeps() {
@@ -227,10 +261,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun updateDisplay() {
-        val seconds = ceil(remainingTime / 1000.0).toInt()
-        val minutes = seconds / 60
-        val secs = seconds % 60
-        timerText.text = getString(R.string.time_format, minutes, secs)
+        if (!isInChange) {
+            val seconds = ceil(remainingTime / 1000.0).toInt()
+            val minutes = seconds / 60
+            val secs = seconds % 60
+            timerText.text = getString(R.string.time_format, minutes, secs)
+        }
         intervalText.text = getString(R.string.interval_label, currentInterval)
 
         val totalSeconds = (totalTimeElapsed / 1000).toInt()
@@ -245,6 +281,7 @@ class MainActivity : AppCompatActivity() {
         countDownTimer?.cancel()
         totalTimer?.cancel()
         trackingTimer?.cancel()
+        handler.removeCallbacksAndMessages(null)
         toneGenerator.release()
     }
 }
