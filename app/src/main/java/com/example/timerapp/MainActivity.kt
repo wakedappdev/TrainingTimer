@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         stopButton.setOnClickListener {
-            stopTimer()
+            resetTimer()
         }
 
         saveIntervalsButton.setOnClickListener {
@@ -92,7 +92,7 @@ class MainActivity : AppCompatActivity() {
                 totalDuration = newTotalDuration
                 currentInterval = interval1
                 remainingTime = currentInterval * 1000L
-                stopTimer()
+                resetTimer()
                 updateDisplay()
             }
         }
@@ -108,6 +108,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun startTimer() {
         if (isRunning) return
+        resetTimer()
         isRunning = true
         isPaused = false
         pauseResumeButton.text = getString(R.string.pause)
@@ -166,13 +167,37 @@ class MainActivity : AppCompatActivity() {
         totalTimer?.cancel()
         trackingTimer?.cancel()
         countDownTimer = null
+//        totalTimer = null
+        isInChange = true
+        timerText.text = "Ta-da!!!"
+//        trackingTimer = null
+        remainingTime = (interval1 * 1000).toLong()
+//        totalTimeElapsed = 0
+//        iterationCount = 0
+        updateDisplay()
+    }
+
+    private fun resetTimer() {
+        isRunning = false
+        isPaused = false
+        isInChange = false
+        handler.removeCallbacksAndMessages(null)
+        pauseResumeButton.text = getString(R.string.start)
+        countDownTimer?.cancel()
+        totalTimer?.cancel()
+        trackingTimer?.cancel()
+        countDownTimer = null
         totalTimer = null
         trackingTimer = null
         remainingTime = (interval1 * 1000).toLong()
         totalTimeElapsed = 0
         iterationCount = 0
+        currentInterval = interval1
+        remainingTime = currentInterval * 1000L
         updateDisplay()
     }
+
+
 
     private fun createTimer(duration: Long) {
         countDownTimer?.cancel()
