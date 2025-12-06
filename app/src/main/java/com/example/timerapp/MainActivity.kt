@@ -167,13 +167,10 @@ class MainActivity : AppCompatActivity() {
         totalTimer?.cancel()
         trackingTimer?.cancel()
         countDownTimer = null
-//        totalTimer = null
         isInChange = true
         timerText.text = "Ta-da!!!"
-//        trackingTimer = null
+        iterationCount++
         remainingTime = (interval1 * 1000).toLong()
-//        totalTimeElapsed = 0
-//        iterationCount = 0
         updateDisplay()
     }
 
@@ -196,8 +193,6 @@ class MainActivity : AppCompatActivity() {
         remainingTime = currentInterval * 1000L
         updateDisplay()
     }
-
-
 
     private fun createTimer(duration: Long) {
         countDownTimer?.cancel()
@@ -250,7 +245,7 @@ class MainActivity : AppCompatActivity() {
     private fun playBeeps() {
         val beepTimer = object : CountDownTimer(1500, 500) {
             override fun onTick(millisUntilFinished: Long) {
-                toneGenerator.startTone(ToneGenerator.TONE_SUP_ERROR, 300)
+                toneGenerator.startTone(ToneGenerator.TONE_SUP_ERROR, 200)
             }
 
             override fun onFinish() {}
