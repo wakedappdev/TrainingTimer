@@ -216,6 +216,7 @@ class MainActivity : AppCompatActivity() {
 
                 isInChange = true
                 timerText.text = "Let's go"
+                updateDisplay()
 
                 handler.postDelayed({
                     isInChange = false
