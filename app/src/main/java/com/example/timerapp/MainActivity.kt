@@ -33,9 +33,9 @@ class MainActivity : AppCompatActivity() {
     private var isRunning = false
     private var isPaused = false
     private var isInChange = false
-    private var interval1 = 9
-    private var interval2 = 6
-    private var totalDuration = 1
+    private var interval1 = 60
+    private var interval2 = 120
+    private var totalDuration = 25
     private var currentInterval = interval1
     private var remainingTime = interval1 * 1000L
     private var totalTimeRemaining = 0L
@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity() {
         trackingTimer?.cancel()
         countDownTimer = null
         isInChange = true
-        timerText.text = "Ta-da!!!"
+        timerText.text = getString(R.string.ta_da)
         iterationCount++
         remainingTime = (interval1 * 1000).toLong()
         updateDisplay()
@@ -215,7 +215,11 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 isInChange = true
-                timerText.text = "Let's go"
+                if (currentInterval == interval2) {
+                    timerText.text = getString(R.string.go)
+                } else {
+                    timerText.text = getString(R.string.rest)
+                }
                 updateDisplay()
 
                 handler.postDelayed({

@@ -9,4 +9,7 @@
     <string name="interval_label">Interval: %1$ds</string>
     <string name="total_time_label">Total Time: %1$02d:%2$02d</string>
     <string name="total_iterations_label">Total Iterations: %1$d</string>
+    <string name="ta_da">Ta-da!!!</string>
+    <string name="go">Let\'s Go</string>
+    <string name="rest">Easy!!!</string>
 </resources>
