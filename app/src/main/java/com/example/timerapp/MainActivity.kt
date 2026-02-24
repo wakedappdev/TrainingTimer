@@ -333,8 +333,10 @@ class MainActivity : AppCompatActivity() {
         
         if (isWarmup) {
             intervalText.text = getString(R.string.warmup)
+        } else if (currentInterval == interval1){
+            intervalText.text = getString(R.string.running_interval_label)
         } else {
-            intervalText.text = getString(R.string.interval_label, currentInterval)
+            intervalText.text = getString(R.string.rest_interval_label)
         }
 
         val totalSeconds = (totalTimeElapsed / 1000).toInt()

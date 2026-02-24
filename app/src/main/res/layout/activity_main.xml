@@ -52,7 +52,7 @@
         android:id="@+id/interval1Label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rep Time"
+        android:text="Running Time"
         android:textColor="#333333"
         app:layout_constraintBottom_toBottomOf="@+id/interval1Input"
         app:layout_constraintEnd_toStartOf="@+id/interval1Input"
