@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var stopButton: Button
     private lateinit var interval1Input: EditText
     private lateinit var interval2Input: EditText
+    private lateinit var warmupInput: EditText
     private lateinit var totalDurationInput: EditText
     private lateinit var saveIntervalsButton: Button
     private lateinit var stopConditionType: RadioGroup
@@ -33,6 +34,8 @@ class MainActivity : AppCompatActivity() {
     private var isRunning = false
     private var isPaused = false
     private var isInChange = false
+    private var isWarmup = false
+    private var warmupDuration = 5
     private var interval1 = 60
     private var interval2 = 120
     private var totalDuration = 25
@@ -57,6 +60,7 @@ class MainActivity : AppCompatActivity() {
         stopButton = findViewById(R.id.stopButton)
         interval1Input = findViewById(R.id.interval1Input)
         interval2Input = findViewById(R.id.interval2Input)
+        warmupInput = findViewById(R.id.warmupInput)
         totalDurationInput = findViewById(R.id.totalDurationInput)
         saveIntervalsButton = findViewById(R.id.saveIntervalsButton)
         stopConditionType = findViewById(R.id.stopConditionType)
@@ -82,11 +86,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         saveIntervalsButton.setOnClickListener {
+            val newWarmup = warmupInput.text.toString().toIntOrNull()
             val newInterval1 = interval1Input.text.toString().toIntOrNull()
             val newInterval2 = interval2Input.text.toString().toIntOrNull()
             val newTotalDuration = totalDurationInput.text.toString().toIntOrNull()
 
-            if (newInterval1 != null && newInterval2 != null && newTotalDuration != null) {
+            if (newWarmup != null && newInterval1 != null && newInterval2 != null && newTotalDuration != null) {
+                warmupDuration = newWarmup
                 interval1 = newInterval1
                 interval2 = newInterval2
                 totalDuration = newTotalDuration
@@ -115,13 +121,22 @@ class MainActivity : AppCompatActivity() {
         totalTimeElapsed = 0L
         iterationCount = 0
         totalTimeRemaining = totalDuration * 60 * 1000L
-        updateDisplay()
 
+        if (warmupDuration > 0) {
+            isWarmup = true
+            remainingTime = warmupDuration * 60 * 1000L
+        } else {
+            isWarmup = false
+            currentInterval = interval1
+            remainingTime = currentInterval * 1000L
+        }
+        
+        updateDisplay()
         createTimer(remainingTime)
         startTrackingTimer()
 
         if (stopConditionType.checkedRadioButtonId == R.id.stopAfterMinutes) {
-            startTotalTimer(totalTimeRemaining)
+            startTotalTimer(totalTimeRemaining + (if (isWarmup) remainingTime else 0L))
         }
     }
 
@@ -136,12 +151,17 @@ class MainActivity : AppCompatActivity() {
 
         if (isInChange) {
             isInChange = false
-            // We paused during change. Prepare for next interval so resume works correctly.
-            currentInterval = if (currentInterval == interval1) interval2 else interval1
-            remainingTime = currentInterval * 1000L
-            if (currentInterval == interval2) {
-                iterationCount++
+            // We paused during change transition. Setup for the next phase.
+            if (isWarmup) {
+                isWarmup = false
+                currentInterval = interval1
+            } else {
+                currentInterval = if (currentInterval == interval1) interval2 else interval1
+                if (currentInterval == interval2) {
+                    iterationCount++
+                }
             }
+            remainingTime = if (isWarmup) (warmupDuration * 60 * 1000L) else (currentInterval * 1000L)
             updateDisplay()
         }
     }
@@ -161,6 +181,7 @@ class MainActivity : AppCompatActivity() {
         isRunning = false
         isPaused = false
         isInChange = false
+        isWarmup = false
         handler.removeCallbacksAndMessages(null)
         pauseResumeButton.text = getString(R.string.start)
         countDownTimer?.cancel()
@@ -169,8 +190,6 @@ class MainActivity : AppCompatActivity() {
         countDownTimer = null
         isInChange = true
         timerText.text = getString(R.string.ta_da)
-        iterationCount++
-        remainingTime = (interval1 * 1000).toLong()
         updateDisplay()
     }
 
@@ -178,6 +197,7 @@ class MainActivity : AppCompatActivity() {
         isRunning = false
         isPaused = false
         isInChange = false
+        isWarmup = false
         handler.removeCallbacksAndMessages(null)
         pauseResumeButton.text = getString(R.string.start)
         countDownTimer?.cancel()
@@ -186,11 +206,10 @@ class MainActivity : AppCompatActivity() {
         countDownTimer = null
         totalTimer = null
         trackingTimer = null
-        remainingTime = (interval1 * 1000).toLong()
         totalTimeElapsed = 0
         iterationCount = 0
         currentInterval = interval1
-        remainingTime = currentInterval * 1000L
+        remainingTime = if (warmupDuration > 0) (warmupDuration * 60 * 1000L) else (interval1 * 1000L)
         updateDisplay()
     }
 
@@ -206,30 +225,49 @@ class MainActivity : AppCompatActivity() {
             override fun onFinish() {
                 playBeeps()
 
-                if (currentInterval == interval2
+                if (!isWarmup && currentInterval == interval2
                     && stopConditionType.checkedRadioButtonId == R.id.stopAfterIterations
                     && iterationCount >= (totalDuration - 1)) {
 
+                    iterationCount++
                     stopTimer()
                     return
                 }
 
                 isInChange = true
-                if (currentInterval == interval2) {
+                if (isWarmup) {
                     timerText.text = getString(R.string.go)
                 } else {
-                    timerText.text = getString(R.string.rest)
+                    if (currentInterval == interval2) {
+                        timerText.text = getString(R.string.go)
+                    } else {
+                        timerText.text = getString(R.string.rest)
+                    }
                 }
                 updateDisplay()
 
                 handler.postDelayed({
                     isInChange = false
                     if (isRunning && !isPaused) {
-                        startNextInterval()
+                        if (isWarmup) {
+                            startIntervals()
+                        } else {
+                            startNextInterval()
+                        }
                     }
                 }, 2000)
             }
         }.start()
+    }
+
+    private fun startIntervals() {
+        isWarmup = false
+        currentInterval = interval1
+        remainingTime = currentInterval * 1000L
+        updateDisplay()
+        if (isRunning) {
+            createTimer(remainingTime)
+        }
     }
 
     private fun startNextInterval() {
@@ -292,7 +330,12 @@ class MainActivity : AppCompatActivity() {
             val secs = seconds % 60
             timerText.text = getString(R.string.time_format, minutes, secs)
         }
-        intervalText.text = getString(R.string.interval_label, currentInterval)
+        
+        if (isWarmup) {
+            intervalText.text = getString(R.string.warmup)
+        } else {
+            intervalText.text = getString(R.string.interval_label, currentInterval)
+        }
 
         val totalSeconds = (totalTimeElapsed / 1000).toInt()
         val totalMinutes = totalSeconds / 60

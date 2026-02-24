@@ -9,6 +9,46 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/warmupLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Warm Up"
+        android:textColor="#333333"
+        app:layout_constraintBottom_toBottomOf="@+id/warmupInput"
+        app:layout_constraintEnd_toStartOf="@+id/warmupInput"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/warmupInput" />
+
+    <EditText
+        android:id="@+id/warmupInput"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#A9A9A9"
+        android:gravity="center"
+        android:hint="Min"
+        android:inputType="number"
+        android:text="5"
+        android:textColor="#333333"
+        app:layout_constraintEnd_toStartOf="@+id/warmupMinutes"
+        app:layout_constraintStart_toEndOf="@+id/warmupLabel"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/warmupMinutes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="minutes"
+        android:textColor="#333333"
+        app:layout_constraintBottom_toBottomOf="@id/warmupInput"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/warmupInput"
+        app:layout_constraintTop_toTopOf="@id/warmupInput" />
+
+    <TextView
         android:id="@+id/interval1Label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +65,7 @@
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="#A9A9A9"
         android:gravity="center"
         android:hint="Interval 1 (s)"
@@ -34,7 +74,7 @@
         android:textColor="#333333"
         app:layout_constraintEnd_toStartOf="@+id/interval1Seconds"
         app:layout_constraintStart_toEndOf="@+id/interval1Label"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/warmupInput" />
 
     <TextView
         android:id="@+id/interval1Seconds"
