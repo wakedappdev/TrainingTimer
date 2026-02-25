@@ -51,6 +51,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        
+        // Set the full app name in the Action Bar/Title
+        title = getString(R.string.full_app_name)
 
         timerText = findViewById(R.id.timerText)
         intervalText = findViewById(R.id.intervalText)

@@ -20,22 +20,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/warmupInput" />
 
-    <EditText
-        android:id="@+id/warmupInput"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="#A9A9A9"
-        android:gravity="center"
-        android:hint="Min"
-        android:inputType="number"
-        android:text="5"
-        android:textColor="#333333"
-        app:layout_constraintEnd_toStartOf="@+id/warmupMinutes"
-        app:layout_constraintStart_toEndOf="@+id/warmupLabel"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
         android:id="@+id/warmupMinutes"
         android:layout_width="wrap_content"
@@ -47,6 +31,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/warmupInput"
         app:layout_constraintTop_toTopOf="@id/warmupInput" />
+
+    <EditText
+        android:id="@+id/warmupInput"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#A9A9A9"
+        android:gravity="center"
+        android:hint="Min"
+        android:inputType="number"
+        android:text="5"
+        android:textColor="#333333"
+        app:layout_constraintEnd_toStartOf="@+id/warmupMinutes"
+        app:layout_constraintStart_toEndOf="@+id/warmupLabel"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/interval1Label"
@@ -173,7 +173,8 @@
             android:layout_height="wrap_content"
             android:checked="true"
             android:text="minutes"
-            android:textColor="#333333" />
+            android:textColor="#333333"
+            android:textColorLink="#FF9800" />
 
         <RadioButton
             android:id="@+id/stopAfterIterations"
@@ -200,7 +201,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="10dp"
         android:text="00:00"
-        android:textColor="#2196F3"
+        android:textColor="#FF9800"
         android:textSize="96sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/intervalText"
@@ -215,7 +216,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Interval: 60s"
-        android:textColor="#A9A9A9"
+        android:textColor="#81000000"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -227,7 +228,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Total Time: 00:00"
-        android:textColor="#D3D3D3"
+        android:textColor="#7B000000"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -239,7 +240,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="Total Iterations: 0"
-        android:textColor="#D3D3D3"
+        android:textColor="#69000000"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
