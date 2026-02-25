@@ -34,13 +34,13 @@ class MainActivity : AppCompatActivity() {
     private var isRunning = false
     private var isPaused = false
     private var isInChange = false
-    private var isWarmup = false
-    private var warmupDuration = 5
-    private var interval1 = 60
-    private var interval2 = 120
-    private var totalDuration = 25
+    private var isWarmup = true
+    private var warmupDuration = 5 // Minutes
+    private var interval1 = 60 // Seconds
+    private var interval2 = 120 // Seconds
+    private var totalDuration = 25 // Minutes
     private var currentInterval = interval1
-    private var remainingTime = interval1 * 1000L
+    private var remainingTime = warmupDuration * 60 * 1000
     private var totalTimeRemaining = 0L
     private var totalTimeElapsed = 0L
     private var iterationCount = 0
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
         saveIntervalsButton = findViewById(R.id.saveIntervalsButton)
         stopConditionType = findViewById(R.id.stopConditionType)
 
-        toneGenerator = ToneGenerator(AudioManager.STREAM_ALARM, 100)
+        toneGenerator = ToneGenerator(AudioManager.STREAM_MUSIC, 100)
 
         updateDisplay()
 
@@ -96,8 +96,8 @@ class MainActivity : AppCompatActivity() {
                 interval1 = newInterval1
                 interval2 = newInterval2
                 totalDuration = newTotalDuration
-                currentInterval = interval1
-                remainingTime = currentInterval * 1000L
+                currentInterval = warmupDuration
+                remainingTime = currentInterval
                 resetTimer()
                 updateDisplay()
             }
@@ -124,19 +124,19 @@ class MainActivity : AppCompatActivity() {
 
         if (warmupDuration > 0) {
             isWarmup = true
-            remainingTime = warmupDuration * 60 * 1000L
+            remainingTime = warmupDuration * 60 * 1000
         } else {
             isWarmup = false
             currentInterval = interval1
-            remainingTime = currentInterval * 1000L
+            remainingTime = currentInterval * 1000
         }
         
         updateDisplay()
-        createTimer(remainingTime)
+        createTimer(remainingTime.toLong())
         startTrackingTimer()
 
         if (stopConditionType.checkedRadioButtonId == R.id.stopAfterMinutes) {
-            startTotalTimer(totalTimeRemaining + (if (isWarmup) remainingTime else 0L))
+            startTotalTimer(totalTimeRemaining + (if (isWarmup) remainingTime else 0))
         }
     }
 
@@ -161,7 +161,7 @@ class MainActivity : AppCompatActivity() {
                     iterationCount++
                 }
             }
-            remainingTime = if (isWarmup) (warmupDuration * 60 * 1000L) else (currentInterval * 1000L)
+            remainingTime = if (isWarmup) (warmupDuration * 60 * 1000) else (currentInterval * 1000)
             updateDisplay()
         }
     }
@@ -170,7 +170,7 @@ class MainActivity : AppCompatActivity() {
         if (!isRunning || !isPaused) return
         isPaused = false
         pauseResumeButton.text = getString(R.string.pause)
-        createTimer(remainingTime)
+        createTimer(remainingTime.toLong())
         startTrackingTimer()
         if (stopConditionType.checkedRadioButtonId == R.id.stopAfterMinutes) {
             startTotalTimer(totalTimeRemaining)
@@ -209,7 +209,7 @@ class MainActivity : AppCompatActivity() {
         totalTimeElapsed = 0
         iterationCount = 0
         currentInterval = interval1
-        remainingTime = if (warmupDuration > 0) (warmupDuration * 60 * 1000L) else (interval1 * 1000L)
+        remainingTime = if (warmupDuration > 0) (warmupDuration * 60 * 1000) else (interval1 * 1000)
         updateDisplay()
     }
 
@@ -218,7 +218,7 @@ class MainActivity : AppCompatActivity() {
 
         countDownTimer = object : CountDownTimer(duration, 100) {
             override fun onTick(millisUntilFinished: Long) {
-                remainingTime = millisUntilFinished
+                remainingTime = millisUntilFinished.toInt()
                 updateDisplay()
             }
 
@@ -263,10 +263,10 @@ class MainActivity : AppCompatActivity() {
     private fun startIntervals() {
         isWarmup = false
         currentInterval = interval1
-        remainingTime = currentInterval * 1000L
+        remainingTime = currentInterval * 1000
         updateDisplay()
         if (isRunning) {
-            createTimer(remainingTime)
+            createTimer(remainingTime.toLong())
         }
     }
 
@@ -277,11 +277,11 @@ class MainActivity : AppCompatActivity() {
         } else {
             currentInterval = interval2
         }
-        remainingTime = currentInterval * 1000L
+        remainingTime = currentInterval * 1000
         updateDisplay()
 
         if (isRunning) {
-            createTimer(remainingTime)
+            createTimer(remainingTime.toLong())
         }
     }
 
